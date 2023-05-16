@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -18,10 +19,12 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly DataContext _context;
+        private readonly ITokenServices _tokenService;
 
-        public AccountController(DataContext context)
+        public AccountController(DataContext context, ITokenServices tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         [HttpPost("Register")]
@@ -44,7 +47,8 @@ namespace API.Controllers
 
             return new UserResponse
             {
-                UserName = user.UserName
+                UserName = user.UserName,
+                Token = _tokenService.CrearToken(user)
             };
         }
 
@@ -65,7 +69,8 @@ namespace API.Controllers
 
             return new UserResponse
             {
-                UserName = user.UserName
+                UserName = user.UserName,
+                Token = _tokenService.CrearToken(user)
             };
                 
         }
